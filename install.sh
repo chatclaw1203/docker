@@ -31,6 +31,8 @@ do_install() {
     mkdir project 
     cd project
     git clone git@github.com:chatclaw1203/chatclaw_backend.git
+    echo "仓库下载完成"
+    echo "开始纸执行docker yml 文件"
     
 }
 
