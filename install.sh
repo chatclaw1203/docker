@@ -24,6 +24,13 @@ do_install() {
     echo "✅ Docker 安装完成！"
     docker --version
     docker compose version
+
+
+    echo "开始安装 clone 仓库..."
+    mkdir project 
+    cd project
+    git clone git@github.com:chatclaw1203/chatclaw_backend.git
+    
 }
 
 do_install
