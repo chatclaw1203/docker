@@ -2,6 +2,13 @@
 set -e
 
 do_install() {
+
+
+    # 装 git
+    echo "安装 git..."
+    yum install -y git
+
+    
     echo "开始安装 Docker..."
 
     curl -fsSL https://get.docker.com | sh
