@@ -3,10 +3,15 @@ set -e
 
 do_install() {
 
-
     # 装 git
     echo "安装 git..."
     yum install -y git
+
+    mkdir -p ~/.ssh
+    cat > ~/.ssh/config << EOF
+    Host github.com
+      IdentityFile ~/.ssh/deploy_key
+    EOF
 
     
     echo "开始安装 Docker..."
