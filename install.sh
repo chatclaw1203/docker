@@ -27,6 +27,7 @@ do_install() {
 
 
     echo "开始安装 clone 仓库..."
+    cd ~
     mkdir project 
     cd project
     git clone git@github.com:chatclaw1203/chatclaw_backend.git
