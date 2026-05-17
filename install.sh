@@ -22,7 +22,7 @@ EOF
     docker compose version
 
     # clone 仓库
-    echo "开始安装 clone 仓库..."
+    echo "开始 clone 仓库..."
     cd ~
     mkdir project
     cd project
