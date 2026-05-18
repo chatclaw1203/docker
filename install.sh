@@ -27,9 +27,15 @@ EOF
     mkdir project
     cd project
     git clone git@github.com:chatclaw1203/chatclaw_backend.git
-    echo "仓库下载完成"
+    echo "仓库下载完成" 
 
-    echo "开始执行 docker yml 文件"
+    echo "🚀 开始部署..."
+    cd /root/project/chatclaw_backend
+    git checkout -- .
+    git pull
+    docker compose build
+    docker compose up -d
+    echo "✅ 部署完成"
 }
 
 do_install
