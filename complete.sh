@@ -51,10 +51,25 @@ EOF
     fi
 
     # 检查 deploy key 是否存在
-    [ -f "$DEPLOY_KEY" ] || fail "Deploy key 不存在：$DEPLOY_KEY，请先上传后再执行脚本"
+    [ -f "$DEPLOY_KEY" ] || fail "Deploy key 不存在：$DEPLOY_KEY，请先生成 deploy key：\n  ssh-keygen -t ed25519 -f $DEPLOY_KEY -C 'chatclaw deploy' -N ''"
     chmod 600 "$DEPLOY_KEY"
 
-    ok "SSH 配置完成"
+    # 打印公钥，提示用户复制到 GitHub
+    echo ""
+    echo "📋 请将以下公钥添加到 GitHub Deploy keys："
+    echo "   https://github.com/chatclaw1203/chatclaw_backend/settings/keys"
+    echo "──────────────────────────────────────────"
+    cat "${DEPLOY_KEY}.pub"
+    echo "──────────────────────────────────────────"
+    echo "添加完成后按 Enter 继续..."
+    read -r _
+
+    # 验证 GitHub 认证是否成功
+    log "验证 GitHub SSH 认证..."
+    ssh -T git@github.com 2>&1 | grep -q "successfully authenticated" \
+        || fail "GitHub SSH 认证失败，请确认公钥已添加到仓库 Deploy keys"
+
+    ok "GitHub SSH 认证成功"
 }
 
 # ────────────────────────────────────────────
