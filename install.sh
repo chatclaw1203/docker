@@ -60,8 +60,17 @@ EOF
         log "SSH config 已存在，跳过"
     fi
 
-    # 先验证，失败才提示添加公钥
-    if ! ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+    # 将公钥加入 authorized_keys（允许用此密钥登录服务器）
+    if ! grep -qf "${DEPLOY_KEY}.pub" ~/.ssh/authorized_keys 2>/dev/null; then
+        cat "${DEPLOY_KEY}.pub" >> ~/.ssh/authorized_keys
+        chmod 600 ~/.ssh/authorized_keys
+        log "公钥已加入 authorized_keys"
+    else
+        log "authorized_keys 已存在，跳过"
+    fi
+
+    # 循环验证 GitHub 认证，直到成功
+    while ! ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; do
         echo ""
         echo "════════════════════════════════════════════"
         echo "  🔑 需要将公钥添加到 GitHub 仓库"
@@ -78,12 +87,10 @@ EOF
         cat "${DEPLOY_KEY}.pub"
         echo "────────────────────────────────────────────"
         echo ""
-        echo "  完成后按 Enter 继续..."
-        read -r _
-        # 再验证一次
-        ssh -T git@github.com 2>&1 | grep -q "successfully authenticated" \
-            || fail "GitHub SSH 认证失败，请确认公钥已正确添加到 Deploy keys"
-    fi
+        echo "  添加完成后按 Enter 继续，输入 q 退出..."
+        read -r input
+        [ "$input" = "q" ] && fail "用户取消，请手动添加公钥后重新运行脚本"
+    done
 
     ok "GitHub SSH 认证成功"
 }
